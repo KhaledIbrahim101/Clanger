@@ -15,6 +15,7 @@
             ],
             "windowsSdkVersion": "10.0.18362.0",
             "compilerPath": "C:\\msys64\\mingw64\\bin\\clang++.exe",
+            "intelliSenseMode": "clang-x64",
             "cStandard": "c11",
             "cppStandard": "c++17"
         }

@@ -8,6 +8,12 @@ Statement::Statement()
 	Type = "Unhandled";	
 }
 
+Statement::Statement(string text, string type)
+{
+	Text = text;
+	Type = type;	
+}
+
 Statement::~Statement()
 {
 
@@ -31,17 +37,23 @@ void Statement::setType(string type)
 	this->Type = type;
 }
 
+pt::ptree Statement::GetInitialpTree()
+{
+	pt::ptree root;
+	string textval = Text;
+	replace(textval.begin(),textval.end(),'\"','\'');
+	root.put("Text", JsonUtility::escape_json(textval));
+	return root;
+}
+
 string Statement::ToString(string format)  
 {
 	string buffer = "";
 
 	if(format == "Json")
 	{
-		pt::ptree root;
-		string textval = Text;
-		replace(textval.begin(),textval.end(),'\"','\'');
+		pt::ptree root = GetInitialpTree();
 		root.put("Type", this->getType());
-		root.put("Text", JsonUtility::escape_json(textval));
 		buffer = JsonUtility::GetJsonString(root);
 	}
 	else

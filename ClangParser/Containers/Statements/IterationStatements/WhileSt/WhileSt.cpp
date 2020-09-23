@@ -69,6 +69,7 @@ void WhileSt::FromString(string format,string buffer)
 	if(format=="Json")
 	{
 		pt::ptree root = JsonUtility::GetJsonObject(buffer);
+		//this->setText(root.get<string>("Text", "Undefined Text"));
 		this->setType(root.get<string>("Type", "Undefined Type"));
 		pt::ptree temp = root.get_child("Condition");
 		if(!temp.empty())

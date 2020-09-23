@@ -26,12 +26,9 @@ string ImplicitCastExprSt::ToString(string format)
 	
 	if(format == "Json")
 	{
-		pt::ptree root;
-		string textval = Text;
-		replace(textval.begin(),textval.end(),'\"','\'');
+		pt::ptree root = GetInitialpTree();
 		root.put("Type", this->getType());
 		root.put("Reference Type", RefType);
-		root.put("Text", JsonUtility::escape_json(textval));
 		buffer = JsonUtility::GetJsonString(root);
 	}
 	else

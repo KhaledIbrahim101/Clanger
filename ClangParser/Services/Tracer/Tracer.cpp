@@ -10,7 +10,6 @@
 #include "CodeFile.hpp"
 extern CodeFile* CF;
 extern set<CodeFile> CodeDB ;
-
 Tracer::Tracer(void)
 {
 }
@@ -20,20 +19,20 @@ Tracer::~Tracer(void)
 {
 }
 
-bool Tracer::getStageInfoByFunctionName(CodeStage* cs, string funname,string filename)
+Function* Tracer::getFunctionToTrace(CodeTrace* cs)
 {
     bool found = false;
+    Function* tfun = nullptr;
     for(auto comp : CodeDB)
     {
-        if(filename.find(StringUtility::remove_extension(comp.getName())) != string::npos)
+        if(cs->getFileName().find(StringUtility::remove_extension(comp.getName())) != string::npos)
         {
             for(auto fun : comp.getGlobalFunctions())
             {
-                if(funname == fun->getName())
+                if(cs->getFunctionName() == fun->getName())
                 {
-                    found = true;
-                    cs->StageFile = comp;
-                    cs->StageFunction = fun;
+                    tfun = fun;
+                    found = false;
                     break;
                 }
             }
@@ -47,11 +46,10 @@ bool Tracer::getStageInfoByFunctionName(CodeStage* cs, string funname,string fil
         {
             for(auto fun : comp.getGlobalFunctions())
             {
-                if(funname == fun->getName())
+                if(cs->getFunctionName() == fun->getName())
                 {
                     found = true;
-                    cs->StageFile = comp;
-                    cs->StageFunction = fun;
+                    tfun = fun;
                     break;
                 }
             }
@@ -59,10 +57,10 @@ bool Tracer::getStageInfoByFunctionName(CodeStage* cs, string funname,string fil
                 break;
         }
     }
-    return found;
+    return tfun;
 }
 
-void Tracer::TraceStatement(CodeStage* current,Statement* st,Variable* tvar)
+void Tracer::TraceStatement(CodeTrace* current,Statement* st,Variable* tvar)
 {
     string type = st->getType();
     switch(StringUtility::str2int(type.c_str()))
@@ -81,6 +79,7 @@ void Tracer::TraceStatement(CodeStage* current,Statement* st,Variable* tvar)
         case StringUtility::str2int("Binary Operator"):
         {
             BinaryOperatorSt* binst = (BinaryOperatorSt*)st;
+            current->CodeBlock.push_back(binst);
             if(tvar == nullptr)
             {
                 TraceStatement(current,binst->getLeftSide(),tvar);
@@ -96,43 +95,31 @@ void Tracer::TraceStatement(CodeStage* current,Statement* st,Variable* tvar)
         case StringUtility::str2int("Call Expression"):
         {
             CallExprSt* callst = (CallExprSt*)st;
-            CodeStage* cs = new CodeStage();
-            bool exists = getStageInfoByFunctionName(cs,callst->getFunctionName(),callst->getFuncDeclFile());
-            if(exists)
+            current->CodeBlock.push_back(callst);
+            for(auto arg : callst->getArguments())
             {
-                TraceFunction(cs);
-            } 
-            else
-            {
-                Variable V;
-                V.setName("Return");
-                V.setTypeName("Undefined Type");
-                Function* fun = new Function();
-                fun->setReturnVarible(V);
-                fun->setName(callst->getFunctionName());
-                for(auto elem : callst->getArguments())
-                {
-                    Variable param;
-                    param.setName(elem->ToString("Json"));
-                    param.setReferenceType("Parameter");
-                    fun->AddParameter(param);
-                }
-                cs->StageFile.setName(callst->getFuncDeclFile());
-                cs->StageFunction = fun;
+                TraceStatement(current,arg);
             }
-            current->Stages.push_back(cs);
+            CodeTrace* cs = new CodeTrace();
+            cs->setName("Trace_" + callst->getFunctionName() + "." + callst->getFuncDeclFile());
+            cs->setFunctionName(callst->getFunctionName());
+            cs->setFileName(callst->getFuncDeclFile());            
+            TraceFunction(cs);
+            current->CodeBranches.push_back(cs);
             break;
         }
 
         case StringUtility::str2int("Do"):
         {
             DoSt* dost = (DoSt*)st;
+            current->CodeBlock.push_back(new Statement("Do Start","Label"));
             list<Statement*> chsts = dost->getStatements();
             for(auto chst : chsts)
             {
                 TraceStatement(current,chst);
             }
             TraceStatement(current,dost->getConditionStatement());
+            current->CodeBlock.push_back(new Statement("Do End","Label"));
             break;
         }
 
@@ -140,11 +127,13 @@ void Tracer::TraceStatement(CodeStage* current,Statement* st,Variable* tvar)
         {
             WhileSt* whilest = (WhileSt*)st;
             TraceStatement(current,whilest->getConditionStatement());
+            current->CodeBlock.push_back(new Statement("While Start","Label"));
             list<Statement*> chsts = whilest->getStatements();
             for(auto chst : chsts)
             {
                 TraceStatement(current,chst);
             }
+            current->CodeBlock.push_back(new Statement("While End","Label"));
             break;
         }
 
@@ -153,58 +142,78 @@ void Tracer::TraceStatement(CodeStage* current,Statement* st,Variable* tvar)
             ForSt* forst = (ForSt*)st;
             TraceStatement(current,forst->getInitStatement());
             TraceStatement(current,forst->getConditionStatement());
+            current->CodeBlock.push_back(new Statement("For Start","Label"));
             list<Statement*> chsts = forst->getStatements();
             for(auto chst : chsts)
             {
                 TraceStatement(current,chst);
             }
             TraceStatement(current,forst->getIncrementStatement());
+            current->CodeBlock.push_back(new Statement("For End","Label"));
             break;
         }
 
         case StringUtility::str2int("If else"):
         {
             IfSt* ifSt = (IfSt*)st;
-            TraceStatement(current,ifSt->getCondition());
+            //TraceStatement(current,ifSt->getCondition());
+            current->CodeBlock.push_back(new Statement("If(" + ifSt->getCondition()->getText() + ")" ,"Label"));
             list<Statement*> chsts = ifSt->getThenStatements();
             for(auto chst : chsts)
             {
                 TraceStatement(current,chst);
             }
+            current->CodeBlock.push_back(new Statement("If End","Label"));
             chsts = ifSt->getElseStatements();
+            current->CodeBlock.push_back(new Statement("Else Start","Label"));
             for(auto chst : chsts)
             {
                 TraceStatement(current,chst);
             }
+            current->CodeBlock.push_back(new Statement("Else End","Label"));
             break;
         }
 
         case StringUtility::str2int("Switch"):
         {
             SwitchSt* switchst = (SwitchSt*)st;
+            current->CodeBlock.push_back(new Statement("Switch Start","Label"));
             list<list<Statement*>> switchcases = switchst->getSwitchCases();
             for(auto scase : switchcases)
             {
+                current->CodeBlock.push_back(new Statement("Case Start","Label"));
                 for(auto casest : scase)
                 {
                     TraceStatement(current,casest);
                 }
+                current->CodeBlock.push_back(new Statement("Case End","Label"));
             }
+            current->CodeBlock.push_back(new Statement("Switch End","Label"));
+            break;
+        }
+
+        default:
+        {
+            current->CodeBlock.push_back(st);
             break;
         }
     }
 }
 
-void Tracer::TraceVariable(CodeStage* current,Variable* tvar)
+void Tracer::TraceVariable(CodeTrace* current,Variable* tvar)
 {
     
 }
 
-void Tracer::TraceFunction(CodeStage* current)
+void Tracer::TraceFunction(CodeTrace* current)
 {
-    list<Statement*> statements = current->StageFunction->getStatements();
-    for(auto st : statements)
+    Function* traceFuntion = getFunctionToTrace(current);
+    if(traceFuntion != nullptr)
     {
-        TraceStatement(current,st);
+        list<Statement*> statements = traceFuntion->getStatements();
+        for(auto st : statements)
+        {
+            TraceStatement(current,st);
+        }
     }
 }

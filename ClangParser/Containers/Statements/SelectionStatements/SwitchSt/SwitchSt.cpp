@@ -94,6 +94,7 @@ void SwitchSt::FromString(string format,string buffer)
     if(format=="Json")
     {
         pt::ptree root = JsonUtility::GetJsonObject(buffer);
+        //this->setText(root.get<string>("Text", "Undefined Text"));
 		this->setType(root.get<string>("Type", "Undefined Type"));
 		for (pt::ptree::value_type &st : root.get_child("Cases"))
 		{

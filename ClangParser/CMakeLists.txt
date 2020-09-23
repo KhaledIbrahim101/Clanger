@@ -1,9 +1,3 @@
-set(CMAKE_MAKE_PROGRAM "C:/msys64/usr/bin/make.exe" CACHE STRING "CMAKE Make Program")
-set(CMAKE_C_COMPILER "C:/msys64/mingw64/bin/clang.exe" CACHE STRING "CMAKE Make Program")
-set(CMAKE_CXX_COMPILER "C:/msys64/mingw64/bin/clang++.exe" CACHE STRING "CMAKE Make Program")
-set(CMAKE_LIBRARY_PATH "C:/msys64/mingw64/lib" CACHE STRING "CMAKE Library Path")
-set(DCMAKE_LIBRARY_PATH "C:/msys64/mingw64/lib" CACHE STRING "CMAKE build Path")
-
 project(clang-parser)
 cmake_minimum_required(VERSION 3.12)
 add_definitions(-std=c++17) 
@@ -84,7 +78,7 @@ include_directories(Containers/Entities/Variable)
 include_directories(Containers/Entities/Function)
 include_directories(Containers/Entities/Violation)
 include_directories(Containers/Entities/CodeFile)
-include_directories(Containers/Entities/CodeStage)
+include_directories(Containers/Entities/CodeTrace)
 
 
 include_directories(Handlers/IncludeHandler)

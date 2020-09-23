@@ -1,6 +1,6 @@
 #ifndef   TRACER_H
 #define   TRACER_H
-#include "CodeStage.hpp"
+#include "CodeTrace.hpp"
 #include <list>
 #include <set> 
 
@@ -9,9 +9,9 @@ class Tracer
 public:
 	Tracer(void);
 	~Tracer(void);
-	static void TraceVariable(CodeStage* current,Variable* tvar);
-	static void TraceFunction(CodeStage* current);
-	static void TraceStatement(CodeStage* current,Statement* st,Variable* tvar = nullptr);
-	static bool getStageInfoByFunctionName(CodeStage* cs, string funname,string filename = "");
+	static void TraceVariable(CodeTrace* current,Variable* tvar);
+	static void TraceFunction(CodeTrace* current);
+	static void TraceStatement(CodeTrace* current,Statement* st,Variable* tvar = nullptr);
+	static Function* getFunctionToTrace(CodeTrace* cs);
 };
 #endif

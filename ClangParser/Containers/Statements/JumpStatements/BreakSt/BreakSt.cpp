@@ -24,7 +24,7 @@ string BreakSt::ToString(string format)
 	string buffer = "";
 	if(format == "Json")
 	{
-		pt::ptree root;
+		pt::ptree root = GetInitialpTree();
 		string textval = this->getText();
 		replace(textval.begin(),textval.end(),'\"','\'');
 		root.put("Type", this->getType());

@@ -42,7 +42,7 @@ string BinaryOperatorSt::ToString(string format)
 	string buffer = "";
 	if(format == "Json")
 	{
-		pt::ptree root, temp;
+		pt::ptree root = GetInitialpTree(), temp;
 		root.put("Type", this->getType());
 		temp = JsonUtility::GetJsonObject( LeftSide->ToString("Json"));
 		root.add_child("Left Side",temp);
@@ -65,6 +65,7 @@ void BinaryOperatorSt::FromString(string format, string buffer)
 	if(format=="Json")
 	{
 		pt::ptree root = JsonUtility::GetJsonObject(buffer);
+		this->setText(root.get<string>("Text", "Undefined Text"));
 		this->setType(root.get<string>("Type", "Undefined Type"));
 		pt::ptree temp = root.get_child("Left Side");
 		if(!temp.empty())

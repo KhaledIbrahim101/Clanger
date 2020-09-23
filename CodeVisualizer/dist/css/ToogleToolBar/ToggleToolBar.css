@@ -1,0 +1,118 @@
+.toolbar-container {
+position: absolute;
+left: 1250px;
+top: 490px;
+}
+
+.menu-toggle {
+width: 60px;
+height: 60px;
+border-radius: 50%;
+background-color: #4C92CC;
+box-shadow: 4px 4px 2px 1px rgba(0, 0, 0, 0.2);
+position: absolute;
+z-index: 5;
+bottom: 0;
+right: 0;
+display: table;
+text-align: center;
+}
+.menu-toggle .fa {
+color: #fff;
+font-size: 2em;
+display: table-cell;
+vertical-align: middle;
+-webkit-transition: 0.4s;
+transition: 0.4s;
+}
+.menu-toggle.open .fa {
+-webkit-transform: rotate(135deg);
+        transform: rotate(135deg);
+}
+
+.btn-toolbar {
+width: 2.5em;
+height: 2.5em;
+border-radius: 50%;
+position: absolute;
+background-color: #87B9E1;
+color: #fff;
+text-align: center;
+}
+.btn-toolbar .fa {
+line-height: 2.5em;
+}
+
+.open .btn-toolbar {
+box-shadow: 4px 4px 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+.menu-round {
+position: absolute;
+bottom: 0;
+right: 0;
+z-index: 3;
+}
+.menu-round .btn-toolbar {
+bottom: 0.25em;
+right: 0.25em;
+-webkit-transition: 0.4s;
+transition: 0.4s;
+}
+.menu-round.open .btn-toolbar:nth-of-type(1) {
+right: 0.5em;
+bottom: 5.0em;
+-webkit-transition-delay: 0.2s;
+        transition-delay: 0.2s;
+}
+.menu-round.open .btn-toolbar:nth-of-type(2) {
+right: 3.8em;
+bottom: 3.8em;
+-webkit-transition-delay: 0.1s;
+        transition-delay: 0.1s;
+}
+.menu-round.open .btn-toolbar:nth-of-type(3) {
+right: 5.0em;
+bottom: 0.5em;
+}
+
+.menu-line {
+position: absolute;
+z-index: 2;
+margin-bottom: 5px;
+}
+.menu-line .btn-toolbar {
+bottom: 0;
+right: 0.5em;
+-webkit-transition: 0.3s;
+transition: 0.3s;
+-webkit-transition-delay: 0.5s;
+        transition-delay: 0.5s;
+}
+.menu-line.open .btn-toolbar:nth-of-type(1) {
+bottom: 4.25em;
+}
+.menu-line.open .btn-toolbar:nth-of-type(1) {
+bottom: 8em;
+}
+.menu-line.open .btn-toolbar:nth-of-type(2) {
+bottom: 11em;
+}
+.menu-line.open .btn-toolbar:nth-of-type(3) {
+bottom: 14em;
+}
+.menu-line.open .btn-toolbar:nth-of-type(4) {
+bottom: 17em;
+}
+.menu-line.open .btn-toolbar:nth-of-type(5) {
+bottom: 20em;
+}
+.menu-line.open .btn-toolbar:nth-of-type(6) {
+bottom: 23em;
+}
+.menu-line.open .btn-toolbar:nth-of-type(7) {
+bottom: 26em;
+}
+.menu-line.open .btn-toolbar:nth-of-type(8) {
+bottom: 29em;
+}

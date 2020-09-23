@@ -39,7 +39,7 @@ string CallExprSt::ToString(string format)
 
 	if(format == "Json")
 	{
-		pt::ptree root, temp, array;
+		pt::ptree root = GetInitialpTree(), temp, array;
 		string pathval = FuncDeclFile;
 		replace(pathval.begin(),pathval.end(),'\\','/');
 		root.put("Type", this->getType());
@@ -71,6 +71,7 @@ void CallExprSt::FromString(string format, string buffer)
 	if(format=="Json")
 	{
 		pt::ptree root = JsonUtility::GetJsonObject(buffer);
+		this->setText(root.get<string>("Text", "Undefined Text"));
 		this->setType(root.get<string>("Type", "Undefined Type"));
 		this->setFunctionName(root.get<string>("Called Function", "Undefined Called Function"));
 		this->setFuncDeclFile(root.get<string>("Definition File", "Undefined Definition File"));

@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/clang-parser.exe",
-            "args": ["trace","D:/Work/My Projects/all","main_task","ApplMain.c","Trace App Main"],
+            "args": ["trace","D:/Work/Projects/all","main_task","ApplMain.c","Trace_AppMain"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "MIMode": "gdb",
@@ -18,7 +18,7 @@
                 {
                     "description": "Enable pretty-printing for gdb",
                     "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
+                    "ignoreFailures": false
                 }],
             "environment": [],
             "externalConsole": false,

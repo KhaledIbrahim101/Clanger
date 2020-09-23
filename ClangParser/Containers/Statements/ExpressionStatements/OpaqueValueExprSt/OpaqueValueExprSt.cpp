@@ -17,11 +17,8 @@ string OpaqueValueExprSt::ToString(string format)
 	
 	if(format == "Json")
 	{
-		pt::ptree root;
-		string textval = this->getText();
-		replace(textval.begin(),textval.end(),'\"','\'');
+		pt::ptree root = GetInitialpTree();
 		root.put("Type", this->getType());
-		root.put("Text", JsonUtility::escape_json(textval));
 		buffer = JsonUtility::GetJsonString(root);
 	}
 	else

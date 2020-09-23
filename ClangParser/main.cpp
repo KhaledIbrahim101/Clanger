@@ -361,7 +361,7 @@ void LoadCodeDB(string rootpath)
 
 int main(int argc, const char **argv) 
 {
-  string command = "", rootpath ="", funname = "", filename = "";
+  string command = "", rootpath ="";
   
   if(argc > 2)
   {
@@ -391,20 +391,17 @@ int main(int argc, const char **argv)
       {
         if(argc >= 5)
         {
-          funname = argv[3];
-          filename = argv[4];
           LoadCodeDB(rootpath);
-          CodeStage* cs = new CodeStage();
+          CodeTrace* cs = new CodeTrace();
           cs->setName(argv[5]);
-          bool exists = Tracer::getStageInfoByFunctionName(cs,funname,filename);
-          if(exists) 
-          {
-            Tracer::TraceFunction(cs);
-            pt::ptree root = JsonUtility::GetJsonObject(cs->ToString("Json"));
-            fs::create_directory(rootpath+"//trace");
-            string jsonpath = rootpath + "\\trace\\" + cs->getName() + ".trc"; 
-            pt::write_json(jsonpath, root);
-          }
+          cs->setFileName(argv[4]);
+          cs->setFunctionName(argv[3]);
+          Tracer::TraceFunction(cs);
+          pt::ptree root = JsonUtility::GetJsonObject(cs->ToString("Json"));
+          fs::create_directory(rootpath+"//trace");
+          string jsonpath = rootpath + "\\trace\\" + cs->getName() + ".trc"; 
+          pt::write_json(jsonpath, root);
+        
         }
         
         // services

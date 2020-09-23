@@ -28,7 +28,7 @@ set(CONTAINERS_SOURCES
 
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeFile/CodeFile.cpp 
 
-	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeStage/CodeStage.cpp 
+	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeTrace/CodeTrace.cpp 
 PARENT_SCOPE)
 
 set(CONTAINERS_HEADERS 
@@ -61,5 +61,5 @@ set(CONTAINERS_HEADERS
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeFile/CodeFile.hpp 
 
-	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeStage/CodeStage.hpp 
+	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeTrace/CodeTrace.hpp 
 PARENT_SCOPE)

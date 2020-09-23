@@ -42,7 +42,7 @@ string IncludeSt::ToString(string format)
 	string buffer = "";
 	if(format == "Json")
 	{
-		pt::ptree root;
+		pt::ptree root = GetInitialpTree();
 		root.put("Type", this->getType());
 		root.put("Include Type", IncludeType);
 		root.put("File Name", FileName);
