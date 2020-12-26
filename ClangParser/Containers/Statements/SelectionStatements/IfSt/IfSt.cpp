@@ -51,16 +51,20 @@ string IfSt::ToString(string format)
 		for (auto elem : this->Then)
 		{
 			temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
+			array.push_back(std::make_pair("", temp));
+			/*temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
 			pair<string,pt::ptree> pptree("Statement",temp);
-			array.push_back(pptree);
+			array.push_back(pptree);*/
 		}
 		root.put_child("Then", array);
 		array.clear();
 		for (auto elem : this->Else)
 		{
 			temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
+			array.push_back(std::make_pair("", temp));
+			/*temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
 			pair<string,pt::ptree> pptree("Statement",temp);
-			array.push_back(pptree);
+			array.push_back(pptree);*/
 		}
 		root.put_child("Else", array);
 		buffer = JsonUtility::GetJsonString(root);

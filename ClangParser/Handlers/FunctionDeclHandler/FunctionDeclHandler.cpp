@@ -13,7 +13,7 @@ void FunctionDeclHandler::run(const MatchFinder::MatchResult &Result)
         string funname = fundecl->getNameAsString();
         string bodyfile =  StringUtility::remove_extension(StringUtility::base_name(fundecl->getLocation().printToString(*(Result.SourceManager))));
         string currentfile = StringUtility::remove_extension(StringUtility::base_name(CF->getPath())); 
-        if(fundecl->hasBody() && bodyfile == currentfile)
+        if(fundecl->hasBody() && bodyfile == currentfile && (!fundecl->isCXXClassMember()))
         {//functions that are defined in the same files
             //llvm::outs()<< fundecl->getNameAsString()<<"\n"; // DONT REMOVE TO DISPLAY MAIN
             currentfunction->setName(funname);

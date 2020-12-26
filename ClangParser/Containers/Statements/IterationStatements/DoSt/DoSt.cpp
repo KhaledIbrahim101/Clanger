@@ -42,8 +42,10 @@ string DoSt::ToString(string format)
 		for (auto elem : this->Statements)
 		{
 			temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
+			array.push_back(std::make_pair("", temp));
+			/*temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
 			pair<string,pt::ptree> pptree("Statement",temp);
-			array.push_back(pptree);
+			array.push_back(pptree);*/
 		}
 		root.put_child("Statements", array);
 		buffer = JsonUtility::GetJsonString(root);

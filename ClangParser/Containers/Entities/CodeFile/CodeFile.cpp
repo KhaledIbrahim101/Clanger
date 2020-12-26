@@ -60,6 +60,11 @@ void CodeFile::AddInclude(IncludeSt* inc)
     this->Includes.insert(inc);
 }
 
+void CodeFile::AddClass(Class* cls)
+{
+    this->Classes.insert(cls);
+}
+
 void CodeFile::AddViolation(Violation vio)
 {
     this->Violations.insert(vio);
@@ -84,8 +89,7 @@ string CodeFile::ToString(string format)
 		for (auto elem : this->GlobalFunctions)
 		{
 			temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
-			pair<string,pt::ptree> pptree("Function",temp);
-			array.push_back(pptree);
+			array.push_back(std::make_pair("", temp));
 		}
 		root.put_child("Functions", array);
 		array.clear();
@@ -93,8 +97,7 @@ string CodeFile::ToString(string format)
 		for (auto elem : this->GlobalVariables)
 		{
 			temp = JsonUtility::GetJsonObject(elem.ToString("Json"));
-			pair<string,pt::ptree> pptree("Global Variable",temp);
-			array.push_back(pptree);
+			array.push_back(std::make_pair("", temp));
 		}
 		root.put_child("Global Variables", array);
 		array.clear();
@@ -102,8 +105,7 @@ string CodeFile::ToString(string format)
 		for (auto elem : this->ExternVariables)
 		{
 			temp = JsonUtility::GetJsonObject(elem.ToString("Json"));
-			pair<string,pt::ptree> pptree("Extern Variable",temp);
-			array.push_back(pptree);
+			array.push_back(std::make_pair("", temp));
 		}
 		root.put_child("External Variables", array);
 		array.clear();
@@ -111,10 +113,17 @@ string CodeFile::ToString(string format)
 		for (auto elem : this->Includes)
 		{
 			temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
-			pair<string,pt::ptree> pptree("Include Header",temp);
-			array.push_back(pptree);
+			array.push_back(std::make_pair("", temp));
 		}
 		root.put_child("Include Headers", array);
+		array.clear();
+
+		for (auto elem : this->Classes)
+		{
+			temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
+			array.push_back(std::make_pair("", temp));
+		}
+		root.put_child("Classes", array);
 		array.clear();
 
 		buffer = JsonUtility::GetJsonString(root);

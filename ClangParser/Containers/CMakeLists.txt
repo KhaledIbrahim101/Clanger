@@ -26,6 +26,8 @@ set(CONTAINERS_SOURCES
 
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/Violation/Violation.cpp 
 
+	${CMAKE_CURRENT_SOURCE_DIR}/Entities/Class/Class.cpp 
+
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeFile/CodeFile.cpp 
 
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeTrace/CodeTrace.cpp 
@@ -59,6 +61,8 @@ set(CONTAINERS_HEADERS
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/Violation/Violation.hpp
 	
+	${CMAKE_CURRENT_SOURCE_DIR}/Entities/Class/Class.hpp 
+
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeFile/CodeFile.hpp 
 
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeTrace/CodeTrace.hpp 

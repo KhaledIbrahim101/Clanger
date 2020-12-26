@@ -61,8 +61,10 @@ string SwitchSt::ToString(string format)
             for(auto cst : casebody)
             {
                 temp = JsonUtility::GetJsonObject(cst->ToString("Json"));
+			    array.push_back(std::make_pair("", temp));
+                /*temp = JsonUtility::GetJsonObject(cst->ToString("Json"));
                 pair<string,pt::ptree> pptree("Statement",temp);
-                array.push_back(pptree);
+                array.push_back(pptree);*/
             }
             
             casept.put_child("Statements", array);

@@ -77,6 +77,7 @@ include_directories(Containers/Statements/CompoundStatements/CompoundSt)
 include_directories(Containers/Entities/Variable)
 include_directories(Containers/Entities/Function)
 include_directories(Containers/Entities/Violation)
+include_directories(Containers/Entities/Class)
 include_directories(Containers/Entities/CodeFile)
 include_directories(Containers/Entities/CodeTrace)
 
@@ -85,7 +86,7 @@ include_directories(Handlers/IncludeHandler)
 include_directories(Handlers/VarDeclHandler)
 include_directories(Handlers/StatementHandler)
 include_directories(Handlers/FunctionDeclHandler)
-
+include_directories(Handlers/ClassDeclHandler)
 include_directories(Services/Tracer)
 
 list (APPEND LIBRARIES_SOURCES ${CONTAINERS_SOURCES})

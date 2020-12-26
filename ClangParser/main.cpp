@@ -26,8 +26,8 @@ cmake --build . > output_file.txt
 $ clang++ -S -emit-llvm main1.cpp -o - | opt -analyze -dot-callgraph
 $ dot -Tpng -ocallgraph.png callgraph.dot
 $ clang -cc1 -ast-dump "D:\Work\My Projects\all\APP_Blr.c"
-clang -Xclang -I -ast-dump -ast-dump-filter="APP_vidManageDataVsConnectionState" "D:\Work\My Projects\all\APP_Blr.c"
-clang-check  "C:\Archi\Bot\Projects\MKW35\code\bigpang\all\ApplMain.c" -ast-dump --
+clang -Xclang -I -ast-dump "D:\Work\Projects\all\testcplusplus.h"
+clang-check  "D:\Work\Projects\all\testcplusplus.h" -ast-dump --
 clang -Xclang -ast-dump -ast-dump-filter="APP_vidManageDataVsConnectionState" -I"C:\Archi\Bot\Projects\MKW35\code\bigpang\inc" "C:\Archi\Bot\Projects\MKW35\code\bigpang\src\APP_Blr.c"
   gpg --keyserver hkp://p80.pool.sks-keyservers.net:80  --search-keys alexpux@gmail.com
 pacman -U https://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-gdb-9.2-1-any.pkg.tar.zst version gdb 9.2
@@ -52,7 +52,7 @@ pacman -U https://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-gdb-9.2-1-any.pkg
 #include "llvm/Support/raw_ostream.h"
 #include <IncludeHandler.hpp>
 #include <VarDeclHandler.hpp>
-#include <FunctionDeclHandler.hpp>
+#include <ClassDeclHandler.hpp>
 #include <Tracer.hpp>
 #include <filesystem>
 
@@ -110,7 +110,7 @@ static llvm::cl::OptionCategory ToolSampleCategory("Sample Category");
 class MyASTConsumer : public ASTConsumer 
 {
   public:
-    MyASTConsumer(Rewriter &R) : /*HandlerForIf(R), HandlerForFor(R) ,*/ HandlerForFunction(R)
+    MyASTConsumer(Rewriter &R) : /*HandlerForIf(R), HandlerForFor(R) ,*/ HandlerForFunction(R), HandlerForClass(R)
     {
       DeclarationMatcher DeclMatch = varDecl().bind("VarDecl");
       Matcher.addMatcher(DeclMatch, &HandlerForVarDecl);
@@ -118,6 +118,8 @@ class MyASTConsumer : public ASTConsumer
       DeclarationMatcher funMatch = functionDecl(isDefinition()).bind("FunctionDecl");
       Matcher.addMatcher(funMatch, &HandlerForFunction);
 
+      DeclarationMatcher classMatch = cxxRecordDecl().bind("CXXRecordDecl");
+      Matcher.addMatcher(classMatch, &HandlerForClass);
       //Matcher.addMatcher(funMatch, &HandlerForFunction);
       /*StatementMatcher loopMatch = forStmt(hasLoopInit(declStmt(hasSingleDecl(
                       varDecl(hasInitializer(integerLiteral(equals(0))))
@@ -156,6 +158,7 @@ class MyASTConsumer : public ASTConsumer
     VarDeclHandler HandlerForVarDecl;
     //IncrementForLoopHandler HandlerForFor;
     FunctionDeclHandler HandlerForFunction;
+    ClassDeclHandler HandlerForClass;
     MatchFinder Matcher;
 };
 
@@ -328,7 +331,7 @@ void GenerateCodeDB(string proroot, string rootpath)
 {
   vector<string> sfiles;
   fs::create_directory(rootpath+"//json");
-  sfiles = getAllFilesInDir(rootpath,".c");
+  sfiles = getAllFilesInDir(rootpath,".h");
   sfiles.push_back(proroot.c_str());
   vector<char*> files;
   files.reserve(sfiles.size());

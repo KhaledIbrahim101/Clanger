@@ -7,8 +7,11 @@
 #include <iterator> 
 #include <IncludeSt.hpp>
 #include <Violation.hpp>
-#ifndef  FUNCTION_H  
+/*#ifndef  FUNCTION_H  
 #include <Function.hpp>
+#endif*/
+#ifndef  CLASS_H  
+#include <Class.hpp>
 #endif
 
 using namespace std;
@@ -21,6 +24,7 @@ class CodeFile
 		set<Variable> ExternVariables;
 		set<Function*> GlobalFunctions;
 		set<IncludeSt*> Includes;
+		set<Class*> Classes;
 		set<Violation> Violations;
 	public:
 		CodeFile();
@@ -33,6 +37,7 @@ class CodeFile
 		void AddExternVariable(Variable evar);
 		void AddGlobalFunction(Function* gfun);
 		void AddInclude(IncludeSt* inc);
+		void AddClass(Class* cls);
 		void AddViolation(Violation vio);
 		set<Function*> getGlobalFunctions();
 		string ToString(string format);

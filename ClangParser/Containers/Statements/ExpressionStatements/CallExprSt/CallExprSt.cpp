@@ -48,8 +48,10 @@ string CallExprSt::ToString(string format)
 		for (auto elem : this->Arguments)
 		{
 			temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
+			array.push_back(std::make_pair("", temp));
+			/*temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
 			pair<string,pt::ptree> pptree("Argument",temp);
-			array.push_back(pptree);
+			array.push_back(pptree);*/
 		}
 		root.put_child("Arguments", array);
 		buffer = JsonUtility::GetJsonString(root);

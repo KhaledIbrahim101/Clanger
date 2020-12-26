@@ -2,7 +2,7 @@ function GetVertexStyle(elemType,graph)
 {
     // Changes the default vertex style in-place
     var style = graph.getStylesheet().getDefaultVertexStyle();
-    style[mxConstants.STYLE_VERTICAL_ALIGN] = 'middle';
+    /*style[mxConstants.STYLE_VERTICAL_ALIGN] = 'middle';
     style[mxConstants.STYLE_FONTSIZE] = 11;
     style[mxConstants.STYLE_STARTSIZE] = 22;
     style[mxConstants.STYLE_HORIZONTAL] = false;
@@ -10,18 +10,18 @@ function GetVertexStyle(elemType,graph)
     style[mxConstants.STYLE_STROKECOLOR] = 'black';
     style[mxConstants.STYLE_WHITE_SPACE] = 'wrap';
     delete style[mxConstants.STYLE_FILLCOLOR];
-    style = mxUtils.clone(style);
+    */style = mxUtils.clone(style);
     switch(elemType)
     {
         case "Call Expression":
-            style[mxConstants.STYLE_SHAPE] = mxConstants.SHAPE_RECTANGLE;
-            style[mxConstants.STYLE_FONTSIZE] = 10;
+            style[mxConstants.STYLE_STROKECOLOR] = 'gray';
             style[mxConstants.STYLE_ROUNDED] = true;
-            style[mxConstants.STYLE_HORIZONTAL] = true;
-            style[mxConstants.STYLE_VERTICAL_ALIGN] = 'middle';
+            style[mxConstants.STYLE_SHADOW] = true;
             style[mxConstants.STYLE_FILLCOLOR] = '#C3D9FF';
-            delete style[mxConstants.STYLE_STARTSIZE];
-            style[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'none';
+            style[mxConstants.STYLE_GRADIENTCOLOR] = 'white';
+            style[mxConstants.STYLE_FONTCOLOR] = 'black';
+            style[mxConstants.STYLE_FONTSIZE] = '12';
+            style[mxConstants.STYLE_SPACING] = 4;
             break;
 
         case "Crossover":
@@ -37,13 +37,15 @@ function GetVertexStyle(elemType,graph)
             break;
 
         case "Action":
-            style[mxConstants.STYLE_SHAPE] = mxConstants.SHAPE_RECTANGLE;
-            style[mxConstants.STYLE_FONTSIZE] = 10;
+            //var style = graph.getStylesheet().getDefaultVertexStyle();
+            style[mxConstants.STYLE_STROKECOLOR] = 'gray';
             style[mxConstants.STYLE_ROUNDED] = true;
-            style[mxConstants.STYLE_HORIZONTAL] = true;
-            style[mxConstants.STYLE_VERTICAL_ALIGN] = 'middle';
-            delete style[mxConstants.STYLE_STARTSIZE];
-            style[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'none';
+            style[mxConstants.STYLE_SHADOW] = true;
+            style[mxConstants.STYLE_FILLCOLOR] = '#DFDFDF';
+            style[mxConstants.STYLE_GRADIENTCOLOR] = 'white';
+            style[mxConstants.STYLE_FONTCOLOR] = 'black';
+            style[mxConstants.STYLE_FONTSIZE] = '12';
+            style[mxConstants.STYLE_SPACING] = 4;
             break;
 
         case "HeaderFile":
@@ -94,16 +96,17 @@ function GetVertexStyle(elemType,graph)
     return style;
 }
 
-function GetEdgeStyle(elemType,graph)
+function GetEdgeStyle(edgeType,graph)
 {
     var style = graph.getStylesheet().getDefaultEdgeStyle();
+    style[mxConstants.STYLE_STROKECOLOR] = '#0C0C0C';
+    style[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'white';
     style[mxConstants.STYLE_EDGE] = mxEdgeStyle.ElbowConnector;
-    style[mxConstants.STYLE_ENDARROW] = mxConstants.ARROW_BLOCK;
     style[mxConstants.STYLE_ROUNDED] = true;
     style[mxConstants.STYLE_FONTCOLOR] = 'black';
-    style[mxConstants.STYLE_STROKECOLOR] = 'black';
+    style[mxConstants.STYLE_FONTSIZE] = '10';
     
-    switch(elemType)
+    switch(edgeType)
     {
         default:
            
@@ -138,9 +141,7 @@ function ActivityDiagramConfig(container)
     //graph.graphHandler.scaleGrid = true;
     //graph.panningHandler.ignoreCell = true;
     
-    // Changes the default style for edges "in-place"
-    var style = graph.getStylesheet().getDefaultEdgeStyle();
-    style[mxConstants.STYLE_EDGE] = mxEdgeStyle.ElbowConnector;
+    
     
     /* Enables panning with left mouse button
     graph.panningHandler.useLeftButtonForPanning = true;
@@ -166,10 +167,11 @@ function ActivityDiagramConfig(container)
     graph.getStylesheet().putCellStyle('End', GetVertexStyle('End',graph)); 
 
     graph.getStylesheet().putCellStyle('Call Expression', GetVertexStyle('Call Expression',graph)); 
-            
+    // Changes the default style for edges "in-place"
+    var style = GetEdgeStyle("",graph);  
     // Installs double click on middle control point and
     // changes style of edges between empty and this value
-    graph.alternateEdgeStyle = 'elbow=vertical';
+    //graph.alternateEdgeStyle = 'elbow=vertical';
 
     // Adds automatic layout and various switches if the
     // graph is enabled
@@ -288,7 +290,7 @@ function ActivityDiagramConfig(container)
             for(var ifstateCounter = 0 ; ifstateCounter < currentFunction.Statements.length; ifstateCounter++)
             {
                 var statement = currentFunction.Statements[ifstateCounter];
-                CellWidth = statement.Text.length < 10  ? 60 : statement.Text.indexOf(' ') > 0 ? statement.Text.length * 4 : statement.Text.length * 6;
+                CellWidth = statement.Text.length < 10  ? 60 : statement.Text.indexOf(' ') > 0 ? statement.Text.length * 8 : statement.Text.length * 6;
                 switch(statement.Type)
                 {
                     case "Label":
