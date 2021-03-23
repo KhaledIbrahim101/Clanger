@@ -12,6 +12,8 @@ class Function
 {
 	private:
 		string Name;
+		bool isVirtual;
+		string AccessModifer;
 		Variable ReturnVarible;
 		set<Variable> Parameters = {};
 		list<Statement*> Statements = {};
@@ -21,8 +23,12 @@ class Function
 		~Function();
 		string getName();
 		void setName(string Name);
+		bool getisVirtual();
+		void setisVirtual(bool isVir);
     	Variable getReturnVarible();
     	void setReturnVarible(Variable ReturnVarible);
+		string getAccessModifer();
+		void setAccessModifer(string AccessModifer);
     	void AddParameter(Variable param);
 		void AddStatement(Statement* statement);
 		list<Statement*> getStatements();

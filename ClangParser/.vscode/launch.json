@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/clang-parser.exe",
-            "args": ["parse","D:/Work/Projects/all","main_task","ApplMain.c","Trace_AppMain"],
+            "args": ["parse","D:/Work/Projects/all/testme",".c","ApplMain.c","Trace_AppMain"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "MIMode": "gdb",

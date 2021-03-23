@@ -23,6 +23,16 @@ void Function::setName(string Name)
     this->Name = Name;
 }
 
+bool Function::getisVirtual()
+{
+    return this->isVirtual;
+}
+
+void Function::setisVirtual(bool isVir)
+{
+    this->isVirtual = isVir;
+}
+
 Variable Function::getReturnVarible()
 {
     return this->ReturnVarible;
@@ -32,6 +42,17 @@ void Function::setReturnVarible(Variable ReturnVarible)
 {
     this->ReturnVarible = ReturnVarible;
 }
+
+string Function::getAccessModifer() 
+{
+	return this->AccessModifer;
+}
+
+void Function::setAccessModifer(string AccessModifer) 
+{
+	this->AccessModifer = AccessModifer;
+}
+
 void Function::AddParameter(Variable param)
 {
     this->Parameters.insert(param);
@@ -61,12 +82,13 @@ string Function::ToString(string format)
 	{
 		pt::ptree root, temp , array;
 		root.put("Name", this->Name);
+		root.put("Access", this->AccessModifer);
+		root.put("Is Virtual", this->isVirtual);
 		root.put_child("Return", JsonUtility::GetJsonObject(this->ReturnVarible.ToString("Json")));
 		for (auto elem : this->Parameters)
 		{
 			temp = JsonUtility::GetJsonObject(elem.ToString("Json"));
-			pair<string,pt::ptree> pptree("Parameter",temp);
-			array.push_back(pptree);
+			array.push_back(std::make_pair("", temp));
 		}
 		root.put_child("Parameters", array);
 		array.clear();
@@ -104,6 +126,8 @@ void Function::FromString(string format,string buffer)
 	{
 		pt::ptree root = JsonUtility::GetJsonObject(buffer);
 		this->setName(root.get<string>("Name", "Undefined Name"));
+		this->setAccessModifer(root.get<string>("Access", "Undefined Access"));
+		this->setisVirtual(root.get<bool>("Is Virtual", "Undefined Virtual"));
 		pt::ptree temp = root.get_child("Return");
 		if(!temp.empty())
 		{

@@ -6,17 +6,19 @@ set(LLVM_SRC_PATH "C:/msys64/mingw64/include" CACHE STRING "LLVM sources path")
 set(LLVM_BUILD_PATH "C:/msys64/mingw64/lib" CACHE STRING "LLVM build path")
 set(LLVM_BIN_PATH "C:/msys64/mingw64/bin" CACHE STRING "LLVM binaries path")
 
+
 execute_process(COMMAND ${LLVM_BIN_PATH}/llvm-config.exe --cxxflags
   OUTPUT_VARIABLE LLVM_CXXFLAGS
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 string(REGEX REPLACE "\n" " " LLVM_CXXFLAGS ${LLVM_CXXFLAGS}) # Also strips newlines
 set(LLVM_CXXFLAGS "${LLVM_CXXFLAGS} -std=c++17 -fexceptions")
-set(LLVM_CXXFLAGS "${LLVM_CXXFLAGS} -frtti -ferror-limit=0")
+set(LLVM_CXXFLAGS "${LLVM_CXXFLAGS} -frtti")
+#set(LLVM_CXXFLAGS "${LLVM_CXXFLAGS} -frtti -ferror-limit=0")
 execute_process(COMMAND ${LLVM_BIN_PATH}/llvm-config.exe --ldflags --libs --system-libs 
   OUTPUT_VARIABLE LLVM_LDFLAGS 
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 string(REGEX REPLACE "\n" " " LLVM_LDFLAGS ${LLVM_LDFLAGS}) # Also strips newlines
-set(CMAKE_CXX_FLAGS "-ferror-limit=0")
+#set(CMAKE_CXX_FLAGS "-ferror-limit=0")
 set(CLANG_INCLUDES ${LLVM_SRC_PATH})
  
 set(CLANG_LIBS

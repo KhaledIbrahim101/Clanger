@@ -14,20 +14,24 @@ class Class
 {
 	private:
 		string Name;
-		set<Variable> PublicVariables;
-		set<Variable> PrivateVariables;
-		set<Function*> PublicFunctions;
-		set<Function*> PrivateFunctions;
+		string AccessModifer;
+		bool isVirtual;
+		set<Variable> Variables;
+		set<Function*> Functions;
+		set<string> Relations;
 	public:
 		Class();
 		~Class();
 		string getName();
 		void setName(string Name);
-		void AddPublicVariable(Variable gvar);
-		void AddPrivateVariable(Variable evar);
-		void AddPublicFunction(Function* gfun);
-		void AddPrivateFunction(Function* gfun);
-		set<Function*> getPublicFunctions();
+		bool getisVirtual();
+		void setisVirtual(bool isVir);
+		string getAccessModifer();
+		void setAccessModifer(string AccessModifer);
+		void AddVariable(Variable gvar);
+		void AddFunction(Function* gfun);
+		void AddRelation(string rel);
+		set<Function*> getFunctions();
 		string ToString(string format);
 		void FromString(string format, string buffer);
 		bool operator< (const Class & msgObj) const;

@@ -59,6 +59,16 @@ void Variable::setReferenceType(string ReferenceType)
 	this->ReferenceType = ReferenceType;
 }
 
+string Variable::getAccessModifer() 
+{
+	return this->AccessModifer;
+}
+
+void Variable::setAccessModifer(string AccessModifer) 
+{
+	this->AccessModifer = AccessModifer;
+}
+
 bool Variable::operator< (const Variable & msgObj) const
 {
 	std::string rightStr =  to_string(msgObj.TypeSize) + msgObj.Name ;
@@ -74,6 +84,7 @@ string Variable::ToString(string format)
 		pt::ptree root, temp , array;
 		root.put("Name", Name);
         root.put("Type", TypeName);
+        root.put("Access", this->AccessModifer);
 		buffer = JsonUtility::GetJsonString(root);
     }
     else

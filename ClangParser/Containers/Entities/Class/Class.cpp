@@ -25,6 +25,25 @@ void Class::setName(string Name)
 	this->Name = Name;
 }
 
+string Class::getAccessModifer() 
+{
+	return this->AccessModifer;
+}
+
+void Class::setAccessModifer(string AccessModifer) 
+{
+	this->AccessModifer = AccessModifer;
+}
+
+bool Class::getisVirtual()
+{
+    return this->isVirtual;
+}
+
+void Class::setisVirtual(bool isVir)
+{
+    this->isVirtual = isVir;
+}
 
 bool Class::operator< (const Class & msgObj) const
 {
@@ -33,29 +52,24 @@ bool Class::operator< (const Class & msgObj) const
 	return (leftStr < rightStr);
 }
 
-void Class::AddPublicVariable(Variable gvar)
+void Class::AddVariable(Variable gvar)
 {
-    this->PublicVariables.insert(gvar);
+    this->Variables.insert(gvar);
 }
 
-void Class::AddPrivateVariable(Variable gvar)
+void Class::AddFunction(Function* gfun)
 {
-    this->PrivateVariables.insert(gvar);
+    this->Functions.insert(gfun);
 }
 
-void Class::AddPublicFunction(Function* gfun)
+void Class::AddRelation(string rel)
 {
-    this->PublicFunctions.insert(gfun);
+    this->Relations.insert(rel);
 }
 
-void Class::AddPrivateFunction(Function* gfun)
+set<Function*> Class::getFunctions()
 {
-    this->PrivateFunctions.insert(gfun);
-}
-
-set<Function*> Class::getPublicFunctions()
-{
-	return this->PublicFunctions;
+	return this->Functions;
 }
 
 string Class::ToString(string format)
@@ -65,49 +79,32 @@ string Class::ToString(string format)
 	{
 		pt::ptree root, temp , array;
 		root.put("Name", Name);
-		
-		for (auto elem : this->PublicFunctions)
+		root.put("Access", this->AccessModifer);
+
+		for (auto elem : this->Relations)
+		{
+			temp.put_value(elem);
+			array.push_back(std::make_pair("", temp));
+		}
+
+		root.put_child("Relations", array);
+		array.clear();
+
+		for (auto elem : this->Functions)
 		{
 			temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
 			array.push_back(std::make_pair("", temp));
-			/*temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
-			pair<string,pt::ptree> pptree("Function",temp);
-			array.push_back(pptree);*/
 		}
-		root.put_child("Public Functions", array);
+
+		root.put_child("Functions", array);
 		array.clear();
 
-		for (auto elem : this->PublicVariables)
+		for (auto elem : this->Variables)
 		{
 			temp = JsonUtility::GetJsonObject(elem.ToString("Json"));
 			array.push_back(std::make_pair("", temp));
-			/*temp = JsonUtility::GetJsonObject(elem.ToString("Json"));
-			pair<string,pt::ptree> pptree("Global Variable",temp);
-			array.push_back(pptree);*/
 		}
-		root.put_child("Public Variables", array);
-		array.clear();
-
-		for (auto elem : this->PrivateVariables)
-		{
-			temp = JsonUtility::GetJsonObject(elem.ToString("Json"));
-			array.push_back(std::make_pair("", temp));
-			/*temp = JsonUtility::GetJsonObject(elem.ToString("Json"));
-			pair<string,pt::ptree> pptree("Extern Variable",temp);
-			array.push_back(pptree);*/
-		}
-		root.put_child("Private Variables", array);
-		array.clear();
-
-		for (auto elem : this->PrivateFunctions)
-		{
-			temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
-			array.push_back(std::make_pair("", temp));
-			/*temp = JsonUtility::GetJsonObject(elem->ToString("Json"));
-			pair<string,pt::ptree> pptree("Function",temp);
-			array.push_back(pptree);*/
-		}
-		root.put_child("Private Functions", array);
+		root.put_child("Variables", array);
 		array.clear();
 
 		buffer = JsonUtility::GetJsonString(root);
@@ -115,23 +112,16 @@ string Class::ToString(string format)
 	else
 	{
 		buffer ="File Name: " + Name + "\n" +
-				"Function Number : " + to_string(PublicFunctions.size()) + "\n";
-		for (auto elem : this->PrivateFunctions)
+				"Function Number : " + to_string(Functions.size()) + "\n";
+		for (auto elem : this->Functions)
 		{
-			buffer += "[Private Function] " + elem->ToString("") + "\n";
+			buffer += "[Function] " + elem->ToString("") + "\n";
 		}
-		for (auto elem : this->PublicVariables)
+		for (auto elem : this->Variables)
 		{
-			buffer += "[Public Variable] " + elem.ToString("") + "\n";
+			buffer += "[Variable] " + elem.ToString("") + "\n";
 		}
-		for (auto elem : this->PrivateVariables)
-		{
-			buffer += "[Private Variable] " + elem.ToString("") + "\n";
-		}
-		for (auto elem : this->PublicFunctions)
-		{
-			buffer += "[Public Function] " + elem->ToString("") + "\n";
-		}
+		
 		buffer += "---------------------------\n";
 		buffer += "---------------------------\n";
 	}
@@ -145,33 +135,19 @@ void Class::FromString(string format, string buffer)
 	{
 		pt::ptree root = JsonUtility::GetJsonObject(buffer);
 		this->setName(root.get<string>("Name", "Undefined Name"));
-
-		for (pt::ptree::value_type &st : root.get_child("Public Variables"))
+		this->setAccessModifer(root.get<string>("Access", "Undefined Access"));
+		for (pt::ptree::value_type &st : root.get_child("Variables"))
 		{
 			Variable var;
 			var.FromString("Json",JsonUtility::GetJsonString(st.second));
-			this->PublicVariables.insert(var);
+			this->Variables.insert(var);
 		}
 
-		for (pt::ptree::value_type &st : root.get_child("Private Variables"))
-		{
-			Variable var;
-			var.FromString("Json",JsonUtility::GetJsonString(st.second));
-			this->PrivateVariables.insert(var);
-		}
-
-		for (pt::ptree::value_type &st : root.get_child("Public Functions"))
+		for (pt::ptree::value_type &st : root.get_child("Functions"))
 		{
 			Function* fun = new Function();
 			fun->FromString("Json",JsonUtility::GetJsonString(st.second));
-			PublicFunctions.insert(fun);
-		}
-
-		for (pt::ptree::value_type &st : root.get_child("Private Functions"))
-		{
-			Function* fun = new Function();
-			fun->FromString("Json",JsonUtility::GetJsonString(st.second));
-			PrivateFunctions.insert(fun);
+			this->Functions.insert(fun);
 		}
 	}
 	else

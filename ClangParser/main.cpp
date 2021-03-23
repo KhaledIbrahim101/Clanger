@@ -250,7 +250,16 @@ int QueueFiles(const char* path,char ** files)
   }
   return i;
 }
-
+std::string replace(std::string str, const std::string from, const std::string to) {
+    if(from.empty())
+        return str;
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+    return str;
+}
 /*
  * Get the list of all files in given directory and its sub directories.
  *
@@ -296,8 +305,9 @@ std::vector<std::string> getAllFilesInDir(const std::string &dirPath, const std:
 				else
 				{
 					// Add the name in vector
+          string oldc = "/", newc = "\\";
           if(iter->path().string().find(extension) != string::npos)
-					  listOfFiles.push_back(iter->path().string());
+					  listOfFiles.push_back(replace(iter->path().string(),oldc,newc));
 				}
  
 				error_code ec;
@@ -327,11 +337,11 @@ vector<char*> ConvertVectorTo2DArray(vector<string> sfiles)
   return files;
 }
 
-void GenerateCodeDB(string proroot, string rootpath)
+void GenerateCodeDB(string proroot, string rootpath, string extensions)
 {
   vector<string> sfiles;
   fs::create_directory(rootpath+"//json");
-  sfiles = getAllFilesInDir(rootpath,".h");
+  sfiles = getAllFilesInDir(rootpath,extensions);
   sfiles.push_back(proroot.c_str());
   vector<char*> files;
   files.reserve(sfiles.size());
@@ -364,17 +374,18 @@ void LoadCodeDB(string rootpath)
 
 int main(int argc, const char **argv) 
 {
-  string command = "", rootpath ="";
+  string command = "", rootpath ="", extensions="";
   
-  if(argc > 2)
+  if(argc > 3)
   {
     command = argv[1];
     rootpath = argv[2];
+    extensions = argv[3];
     switch(StringUtility::str2int(command.c_str()))
     {
       case StringUtility::str2int("parse"):
       {
-        GenerateCodeDB(argv[0], rootpath);
+        GenerateCodeDB(argv[0], rootpath,extensions);
         break;
       }
 

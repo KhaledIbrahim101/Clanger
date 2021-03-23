@@ -10,26 +10,44 @@ void ClassDeclHandler::run(const MatchFinder::MatchResult &Result)
 
     if (const CXXRecordDecl *classDecl = Result.Nodes.getNodeAs<clang::CXXRecordDecl>("CXXRecordDecl")) 
     {
-        if(classDecl->hasDefinition())
+        string bodyfile =  StringUtility::remove_extension(StringUtility::base_name(classDecl->getLocation().printToString(*(Result.SourceManager))));
+        string currentfile = StringUtility::remove_extension(StringUtility::base_name(CF->getPath())); 
+        if(classDecl->hasDefinition() && bodyfile == currentfile)
         {
             string classname = classDecl->getNameAsString();
             currentClass->setName(classname);
-            string bodyfile =  StringUtility::remove_extension(StringUtility::base_name(classDecl->getLocation().printToString(*(Result.SourceManager))));
-            string currentfile = StringUtility::remove_extension(StringUtility::base_name(CF->getPath())); 
+            //currentClass->setisVirtual(classDecl->virt)
+            for(auto parent : classDecl->bases())
+            {
+                currentClass->AddRelation("Child of " + (string)parent.getType()->getAsRecordDecl()->getNameAsString());
+            }
+
             for(auto field : classDecl->fields())
             {
                 FieldDecl* fd = (FieldDecl*)field;
+                const clang::QualType qt = fd->getType();
+                const clang::Type* t = qt.getTypePtr();
+
                 Variable* v = new Variable();
-                v->setName(fd->getNameAsString());
-                v->setTypeName(fd->getQualifiedNameAsString());
-                if(fd->isModulePrivate())
+                v->setName(fd->getName());
+                v->setTypeName(fd->getType().getAsString());
+                if(!t->isBuiltinType() && v->getTypeName().find("class") != string::npos)
                 {
-                    currentClass->AddPrivateVariable(*v);
+                    currentClass->AddRelation("Compsition of " + v->getTypeName());
                 }
-                else
+                if(fd->getAccess() == AccessSpecifier::AS_private)
                 {
-                    currentClass->AddPublicVariable(*v);
+                    v->setAccessModifer("Private");
                 }
+                else if(fd->getAccess() == AccessSpecifier::AS_public)
+                {
+                    v->setAccessModifer("Public");
+                }
+                else if(fd->getAccess() == AccessSpecifier::AS_protected)
+                {
+                    v->setAccessModifer("Protected");
+                }
+                currentClass->AddVariable(*v);
             }
             for(auto method : classDecl->methods())
             {
@@ -39,10 +57,12 @@ void ClassDeclHandler::run(const MatchFinder::MatchResult &Result)
                     FunctionDecl *fundecl = md->getAsFunction();
                     Function* currentfunction = new Function();
                     currentfunction->setName(fundecl->getNameAsString());
+                    //currentfunction->setisVirtual(md->is)
                     variable.setName("Return");
                     variable.setReferenceType("Return");
                     variable.setTypeName(fundecl->getReturnType().getAsString());
                     currentfunction->setReturnVarible(variable);
+                    currentfunction->setisVirtual(fundecl->isVirtualAsWritten());
                     Variable Param;
                     paramsNumber = fundecl->getNumParams();
                     for(int iParam = 0 ; iParam < paramsNumber ; iParam++)
@@ -55,20 +75,27 @@ void ClassDeclHandler::run(const MatchFinder::MatchResult &Result)
                     Stmt *st = fundecl->getBody();
                     StatementHandler::mResult = &Result;
                     currentfunction->AddStatement(StatementHandler::Handle(st));
-                    /*for (auto fst = st->child_begin(); fst != st->child_end(); fst++)
+
+                    switch(fundecl->getAccess())
                     {
-                        Statement* ast = StatementHandler::Handle(*fst);
-                        currentfunction->AddStatement(ast);
-                    }*/
+                        case AccessSpecifier::AS_private:
+                            currentfunction->setAccessModifer("Private");
+                            break;
+
+                        case AccessSpecifier::AS_public:
+                            currentfunction->setAccessModifer("Public");
+                            break;
+
+                        case AccessSpecifier::AS_protected:
+                            currentfunction->setAccessModifer("Protected");
+                            break;  
+                        
+                        default:
+
+                            break;
+                    }
                     
-                    if(md->isExternallyVisible())
-                    {
-                        currentClass->AddPublicFunction(currentfunction);
-                    }
-                    else if(md->isModulePrivate())
-                    {
-                        currentClass->AddPrivateFunction(currentfunction);
-                    }
+                    currentClass->AddFunction(currentfunction);
                 }
             }
             CF->AddClass(currentClass);

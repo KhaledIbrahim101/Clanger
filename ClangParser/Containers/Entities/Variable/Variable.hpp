@@ -12,6 +12,7 @@ class Variable
 		size_t TypeSize;
 		string InitValue;
 		string ReferenceType;
+		string AccessModifer;
 
 	public:
 		string getName();
@@ -24,6 +25,8 @@ class Variable
 		void setInitValue(string InitValue); 
 		string getReferenceType();
 		void setReferenceType(string ReferenceType);
+		string getAccessModifer();
+		void setAccessModifer(string AccessModifer);
 		bool operator< (const Variable & msgObj) const;
 		string ToString(string format);
 		void FromString(string format, string buffer);

@@ -21,6 +21,7 @@ void FunctionDeclHandler::run(const MatchFinder::MatchResult &Result)
             variable.setReferenceType("Return");
             variable.setTypeName(fundecl->getReturnType().getAsString());
             currentfunction->setReturnVarible(variable);
+            currentfunction->setisVirtual(false);
             Variable Param;
             paramsNumber = fundecl->getNumParams();
             for(int iParam = 0 ; iParam < paramsNumber ; iParam++)
@@ -44,7 +45,24 @@ void FunctionDeclHandler::run(const MatchFinder::MatchResult &Result)
                     currentfunction->AddStatement(ast);
                 }
             //}
-            
+            switch(fundecl->getAccess())
+            {
+                case AccessSpecifier::AS_private:
+                    currentfunction->setAccessModifer("Private");
+                    break;
+
+                case AccessSpecifier::AS_public:
+                    currentfunction->setAccessModifer("Public");
+                    break;
+
+                case AccessSpecifier::AS_protected:
+                    currentfunction->setAccessModifer("Protected");
+                    break;  
+                
+                default:
+
+                    break;
+            }
             CF->AddGlobalFunction(currentfunction);
         }  
         //else if(1==1)
