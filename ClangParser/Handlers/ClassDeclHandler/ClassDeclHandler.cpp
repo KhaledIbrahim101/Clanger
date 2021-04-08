@@ -16,48 +16,54 @@ void ClassDeclHandler::run(const MatchFinder::MatchResult &Result)
         {
             string classname = classDecl->getNameAsString();
             currentClass->setName(classname);
-            //currentClass->setisVirtual(classDecl->virt)
+            currentClass->setisFinal(classDecl->isEffectivelyFinal());
+            /* Parsing parent classes of the class */
             for(auto parent : classDecl->bases())
             {
                 currentClass->AddRelation("Child of " + (string)parent.getType()->getAsRecordDecl()->getNameAsString());
             }
-
+            /* Parsing fields of the class */
             for(auto field : classDecl->fields())
             {
                 FieldDecl* fd = (FieldDecl*)field;
-                const clang::QualType qt = fd->getType();
-                const clang::Type* t = qt.getTypePtr();
+                if(fd->isCXXClassMember() && fd->isImplicit() == false)
+                {
+                    const clang::QualType qt = fd->getType();
+                    const clang::Type* t = qt.getTypePtr();
 
-                Variable* v = new Variable();
-                v->setName(fd->getName());
-                v->setTypeName(fd->getType().getAsString());
-                if(!t->isBuiltinType() && v->getTypeName().find("class") != string::npos)
-                {
-                    currentClass->AddRelation("Compsition of " + v->getTypeName());
+                    Variable* v = new Variable();
+                    v->setName((string)fd->getName());
+                    v->setTypeName(fd->getType().getAsString());
+                    if(!t->isBuiltinType() && v->getTypeName().find("class") != string::npos)
+                    {
+                        /* Parsing compsition relationships of the class */
+                        currentClass->AddRelation("Compsition of " + v->getTypeName());
+                    }
+                    if(fd->getAccess() == AccessSpecifier::AS_private)
+                    {
+                        v->setAccessModifer("Private");
+                    }
+                    else if(fd->getAccess() == AccessSpecifier::AS_public)
+                    {
+                        v->setAccessModifer("Public");
+                    }
+                    else if(fd->getAccess() == AccessSpecifier::AS_protected)
+                    {
+                        v->setAccessModifer("Protected");
+                    }
+                    currentClass->AddVariable(*v);
                 }
-                if(fd->getAccess() == AccessSpecifier::AS_private)
-                {
-                    v->setAccessModifer("Private");
-                }
-                else if(fd->getAccess() == AccessSpecifier::AS_public)
-                {
-                    v->setAccessModifer("Public");
-                }
-                else if(fd->getAccess() == AccessSpecifier::AS_protected)
-                {
-                    v->setAccessModifer("Protected");
-                }
-                currentClass->AddVariable(*v);
+                
             }
+            /* Parsing methods of the class */
             for(auto method : classDecl->methods())
             {
                 CXXRecordDecl* md = (CXXRecordDecl*)method;
-                if(md->isCXXClassMember())
+                if(md->isCXXClassMember() && md->isImplicit() == false)
                 {
                     FunctionDecl *fundecl = md->getAsFunction();
                     Function* currentfunction = new Function();
                     currentfunction->setName(fundecl->getNameAsString());
-                    //currentfunction->setisVirtual(md->is)
                     variable.setName("Return");
                     variable.setReferenceType("Return");
                     variable.setTypeName(fundecl->getReturnType().getAsString());
@@ -72,10 +78,20 @@ void ClassDeclHandler::run(const MatchFinder::MatchResult &Result)
                         Param.setTypeName(fundecl->getParamDecl(iParam)->getType().getAsString());
                         currentfunction->AddParameter(Param);
                     }
-                    Stmt *st = fundecl->getBody();
+
+                    Stmt *st;
+                    if(fundecl->hasBody())
+                    {
+                        st = fundecl->getBody();
+                    }
+                    else
+                    {
+                        st = md->getBody();
+                    }
+
                     StatementHandler::mResult = &Result;
                     currentfunction->AddStatement(StatementHandler::Handle(st));
-
+                    
                     switch(fundecl->getAccess())
                     {
                         case AccessSpecifier::AS_private:
@@ -94,8 +110,25 @@ void ClassDeclHandler::run(const MatchFinder::MatchResult &Result)
 
                             break;
                     }
-                    
                     currentClass->AddFunction(currentfunction);
+                }
+            }
+            /* Parsing friends of the class */
+            if(classDecl->hasFriends())
+            {
+                for(auto fri : classDecl->friends())
+                {
+                    /* Parsing compsition relationships of the class */
+                    FriendDecl* friDecl = (FriendDecl*)fri;
+                    if(friDecl->isFunctionOrFunctionTemplate())
+                    {
+                        FunctionDecl *fundecl = friDecl->getAsFunction();
+                        currentClass->AddRelation("Has a friend of name " + fundecl->getNameAsString());
+                    }
+                    else
+                    {
+
+                    }
                 }
             }
             CF->AddClass(currentClass);

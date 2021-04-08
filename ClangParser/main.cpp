@@ -189,8 +189,8 @@ class MyFrontendAction : public ASTFrontendAction
     std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI, StringRef file) override 
     {
       CF = new CodeFile();
-      CF->setPath(file);
-      CF->setName(StringUtility::base_name(file));
+      CF->setPath((string)file);
+      CF->setName((string)StringUtility::base_name(file));
       llvm::errs() << "** Creating AST consumer for: " << file << "\n";
       TheRewriter.setSourceMgr(CI.getSourceManager(), CI.getLangOpts());
       

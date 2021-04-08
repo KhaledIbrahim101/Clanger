@@ -16,6 +16,7 @@ class Class
 		string Name;
 		string AccessModifer;
 		bool isVirtual;
+		bool isFinal;
 		set<Variable> Variables;
 		set<Function*> Functions;
 		set<string> Relations;
@@ -26,6 +27,8 @@ class Class
 		void setName(string Name);
 		bool getisVirtual();
 		void setisVirtual(bool isVir);
+		bool getisFinal();
+		void setisFinal(bool isFin);
 		string getAccessModifer();
 		void setAccessModifer(string AccessModifer);
 		void AddVariable(Variable gvar);

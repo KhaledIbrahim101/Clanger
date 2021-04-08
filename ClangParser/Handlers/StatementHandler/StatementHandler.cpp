@@ -20,9 +20,9 @@ static string GetExprAsString(const Stmt* st)
     //Get the source manager.
     const SourceManager *SM = StatementHandler::mResult->SourceManager;
     //Use LLVM's lexer to get source text.
-    string text = Lexer::getSourceText(CharSourceRange::getTokenRange(st->getSourceRange()), *SM, LangOptions(), 0);
+    string text = (string)Lexer::getSourceText(CharSourceRange::getTokenRange(st->getSourceRange()), *SM, LangOptions(), 0);
     if (text.size() > 0 && (text.at(text.size()-1) == ',')) //the text can be ""
-        return Lexer::getSourceText(CharSourceRange::getCharRange(st->getSourceRange()), *SM, LangOptions(), 0);
+        return (string)Lexer::getSourceText(CharSourceRange::getCharRange(st->getSourceRange()), *SM, LangOptions(), 0);
     return text;
 }
 

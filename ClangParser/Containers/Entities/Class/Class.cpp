@@ -40,6 +40,16 @@ bool Class::getisVirtual()
     return this->isVirtual;
 }
 
+void Class::setisFinal(bool isFin)
+{
+    this->isFinal = isFin;
+}
+
+bool Class::getisFinal()
+{
+    return this->isFinal;
+}
+
 void Class::setisVirtual(bool isVir)
 {
     this->isVirtual = isVir;
