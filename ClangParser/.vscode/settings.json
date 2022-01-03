@@ -75,6 +75,16 @@
         "stop_token": "cpp",
         "variant": "cpp",
         "*.def": "cpp",
-        "strstream": "cpp"
+        "strstream": "cpp",
+        "span": "cpp",
+        "any": "cpp",
+        "cfenv": "cpp",
+        "charconv": "cpp",
+        "cuchar": "cpp",
+        "numbers": "cpp",
+        "regex": "cpp",
+        "scoped_allocator": "cpp",
+        "core": "cpp",
+        "filesystem": "cpp"
     }
 }

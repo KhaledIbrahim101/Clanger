@@ -28,7 +28,11 @@ set(CONTAINERS_SOURCES
 
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/Class/Class.cpp 
 
+	${CMAKE_CURRENT_SOURCE_DIR}/Entities/TGraph/TGraph.cpp 
+
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeFile/CodeFile.cpp 
+
+	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeElement/CodeElement.cpp 
 
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeTrace/CodeTrace.cpp 
 PARENT_SCOPE)
@@ -63,7 +67,11 @@ set(CONTAINERS_HEADERS
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/Class/Class.hpp 
 
+	${CMAKE_CURRENT_SOURCE_DIR}/Entities/TGraph/TGraph.hpp
+
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeFile/CodeFile.hpp 
+
+	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeElement/CodeElement.hpp 
 
 	${CMAKE_CURRENT_SOURCE_DIR}/Entities/CodeTrace/CodeTrace.hpp 
 PARENT_SCOPE)

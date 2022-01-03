@@ -1,10 +1,11 @@
+#include "string"
 class StringUtility
 {
 public:
 	StringUtility(void);
 	~StringUtility(void);
 
-	static constexpr unsigned int str2int(const char* str, int h = 0)
+	static constexpr uint16_t str2int(const char* str, int h = 0)
 	{
 		return !str[h] ? 5381 : (str2int(str, h+1) * 33) ^ str[h];
 	}
@@ -24,5 +25,25 @@ public:
 	{
 	  typename T::size_type const p(filename.find_last_of('.'));
 	  return p > 0 && p != T::npos ? filename.substr(0, p) : filename;
+	}
+	template<class T>
+	static bool ends_with(T const & value, T const & ending)
+	{
+		if (ending.size() > value.size()) return false;
+		return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+	}
+	static uint16_t jenkens_hash(const char *key, size_t len)
+	{
+		uint16_t hash = 0, i = 0;
+		for(hash = i = 0; i < len; ++i)
+		{
+			hash += key[i];
+			hash += (hash << 10);
+			hash ^= (hash >> 6);
+		}
+		hash += (hash << 3);
+		hash ^= (hash >> 11);
+		hash += (hash << 15);
+		return hash;
 	}
 };

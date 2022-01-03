@@ -12,6 +12,8 @@
 #ifndef  CODEFILE_H  
 #include <CodeFile.hpp>
 #endif
+
+
 using namespace clang;
 using namespace clang::ast_matchers;
 using namespace std;
@@ -20,7 +22,7 @@ class FunctionDeclHandler : public MatchFinder::MatchCallback
   public:
     FunctionDeclHandler(Rewriter &Rewrite) : Rewrite(Rewrite) {}
     virtual void run(const MatchFinder::MatchResult &Result);
-
   private:
     Rewriter &Rewrite;
+    
 };

@@ -20,7 +20,7 @@ execute_process(COMMAND ${LLVM_BIN_PATH}/llvm-config.exe --ldflags --libs --syst
 string(REGEX REPLACE "\n" " " LLVM_LDFLAGS ${LLVM_LDFLAGS}) # Also strips newlines
 #set(CMAKE_CXX_FLAGS "-ferror-limit=0")
 set(CLANG_INCLUDES ${LLVM_SRC_PATH})
- 
+#set(Eigen2_INCLUDE_DIR "C:/msys64/mingw64/include/eigen3/Eigen") 
 set(CLANG_LIBS
   -Wl,--start-group
   clangAST
@@ -50,6 +50,11 @@ add_subdirectory(Containers)
 add_subdirectory(Handlers)
 add_subdirectory(Services)
 
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
+
+#find_package(Eigen2 REQUIRED)
+
+#include_directories(${Eigen2_INCLUDE_DIR})
 include_directories(${CLANG_INCLUDES})
 
 include_directories(Libraries/StringUtility)
@@ -80,7 +85,9 @@ include_directories(Containers/Entities/Variable)
 include_directories(Containers/Entities/Function)
 include_directories(Containers/Entities/Violation)
 include_directories(Containers/Entities/Class)
+include_directories(Containers/Entities/TGraph)
 include_directories(Containers/Entities/CodeFile)
+include_directories(Containers/Entities/CodeElement)
 include_directories(Containers/Entities/CodeTrace)
 
 
@@ -89,6 +96,9 @@ include_directories(Handlers/VarDeclHandler)
 include_directories(Handlers/StatementHandler)
 include_directories(Handlers/FunctionDeclHandler)
 include_directories(Handlers/ClassDeclHandler)
+
+#include_directories(Services/SpectralClustering)
+include_directories(Services/SC)
 include_directories(Services/Tracer)
 
 list (APPEND LIBRARIES_SOURCES ${CONTAINERS_SOURCES})
@@ -108,6 +118,8 @@ message( ${LLVM_LDFLAGS} )
 # since ld is positional no symbols are available when actual objs ask them)
 
 #Important Note: They have to be in order!!!
+set(LINK_BOOSTGRAPHVIZ boost_system-mt boost_graph-mt)
+target_link_libraries(${PROJECT_NAME} ${LINK_BOOSTGRAPHVIZ})
 target_link_libraries(${PROJECT_NAME} ${CLANG_LIBS})
 target_link_libraries(${PROJECT_NAME} ${LLVM_LDFLAGS})
 target_link_libraries(${PROJECT_NAME} version)

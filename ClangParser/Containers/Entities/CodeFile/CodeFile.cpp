@@ -8,12 +8,32 @@
 #endif
 CodeFile::CodeFile()
 {
+	GID = 0;
+	Score = 0;
+	Marked = false;
+}
 
+CodeFile::CodeFile(CodeFile* cf)
+{
+	GID = cf->GID;
+	Marked = cf->Marked;
+	Name = cf->Name;
+	Path = cf->Path;
+	GlobalFunctions = cf->GlobalFunctions;
 }
 
 CodeFile::~CodeFile()
 {
 
+}
+
+uint16_t CodeFile::getGID() 
+{
+	return this->GID;
+}
+void CodeFile::setGID(uint16_t ID) 
+{
+	this->GID = ID;
 }
 
 string CodeFile::getName() 
@@ -38,6 +58,13 @@ bool CodeFile::operator< (const CodeFile & msgObj) const
 	std::string rightStr = 	msgObj.Path ;
 	std::string leftStr = 	this->Path ;
 	return (leftStr < rightStr);
+}
+
+bool CodeFile::operator== (const CodeFile & msgObj) const
+{
+	std::string rightStr = 	msgObj.Path ;
+	std::string leftStr = 	this->Path ;
+	return (leftStr == rightStr);
 }
 
 void CodeFile::AddGlobalVariable(Variable gvar)
@@ -73,6 +100,11 @@ void CodeFile::AddViolation(Violation vio)
 set<Function*> CodeFile::getGlobalFunctions()
 {
 	return this->GlobalFunctions;
+}
+
+set<IncludeSt*> CodeFile::getIncludes()
+{
+	return this->Includes;
 }
 
 string CodeFile::ToString(string format)

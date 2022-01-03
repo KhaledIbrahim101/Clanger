@@ -7,7 +7,7 @@
 #include <CompoundSt.hpp>
 #include <SwitchSt.hpp>
 #include <DeclSt.hpp>
-#include <CallExprSt.hpp>
+//#include <CallExprSt.hpp> because needed in function decl handler and moved to hpp
 #include <BinaryOperatorSt.hpp>
 #include <OpaqueValueExprSt.hpp>  
 #include <ReturnSt.hpp>
@@ -163,9 +163,6 @@ Statement* StatementHandler::HandleFunctionCall(const Stmt* st)
         {
             sts->AddArgument(Handle(IfS->getArg(i)));
         }
-        /*if(argNumber > 1)
-            sts->setFuncDeclFile(GetExprAsString(IfS->getArg(0)));
-        else*/
         sts->setFuncDeclFile(IfS->getCalleeDecl()->getLocation().printToString(*(mResult->SourceManager)));
         sts->setFunctionName(func->getQualifiedNameAsString());
     }

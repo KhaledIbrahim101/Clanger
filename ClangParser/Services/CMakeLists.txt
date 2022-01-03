@@ -1,5 +1,5 @@
 set(SERVICES_SOURCES 
-	${CMAKE_CURRENT_SOURCE_DIR}/Tracer/Tracer.cpp 
+	${CMAKE_CURRENT_SOURCE_DIR}/Tracer/Tracer.cpp
 	${CMAKE_SOURCE_DIR}/main.cpp
 PARENT_SCOPE)
 

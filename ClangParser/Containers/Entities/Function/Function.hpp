@@ -35,5 +35,6 @@ class Function
 		string ToString(string format);
 		void FromString(string format, string buffer);
 		bool operator< (const Function & msgObj) const;
+		int operator- (const Function & msgObj) const;
 };
 #endif

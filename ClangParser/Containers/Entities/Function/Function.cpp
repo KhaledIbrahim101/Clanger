@@ -75,6 +75,53 @@ bool Function::operator< (const Function & msgObj) const
     }
 }
 
+int Function::operator- (const Function & msgObj) const
+{
+    int score = 0;
+	if(this->Name == msgObj.Name)
+	{
+		return 0;
+	}
+	string prefix1 = this->Name.substr(0,this->Name.find_last_of('_'));
+	string prefix2 = msgObj.Name.substr(0,msgObj.Name.find_last_of('_'));
+	if(prefix1 != prefix2)
+	{
+		score += 1;
+	}
+	bool is1Calls2 = false, is2Calls1 = false;
+	for (auto selem : Statements)
+    {
+        Statement* ast = (Statement*)selem;
+        if(ast->getType() == "Call Expression")
+        {
+          CallExprSt* call = (CallExprSt*)ast;
+		  if(call->getFunctionName() == msgObj.Name)
+		  {
+			is1Calls2 = true;
+			break;
+		  }
+		}
+	}
+	for (auto selem : msgObj.Statements)
+    {
+        Statement* ast = (Statement*)selem;
+        if(ast->getType() == "Call Expression")
+        {
+          CallExprSt* call = (CallExprSt*)ast;
+		  if(call->getFunctionName() == this->Name)
+		  {
+			is2Calls1 = true;
+			break;
+		  }
+		}
+	}
+	if((!is1Calls2) && (!is2Calls1))
+	{
+		score += 3;
+	}
+	return score;
+}
+
 string Function::ToString(string format)
 {
 	string buffer = "";

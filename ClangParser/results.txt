@@ -1,0 +1,3 @@
+load Duration: 3.8 minutes.
+1st Clustering Duration: 0 minutes.
+2nd Clustering Duration: 0.316667 minutes.
